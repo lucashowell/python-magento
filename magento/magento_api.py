@@ -52,7 +52,18 @@ class MagentoAPI(object):
         self._api_key = api_key
         self._host = host
         self._port = str(port)
-        self._uri = '{}://{}:{}/{}'.format(proto, host, port, path.strip('/'))
+
+        # This breaks if magento host installed in a subdirectory (i.e. "example.com/subdir").
+        # self._uri = '{}://{}:{}/{}'.format(proto, host, port, path.strip('/'))
+        # Tries to access: example.com/subdir:80/api/xmlrpc instead of example.com:80/subdir/api/xmlrpc
+
+        # Subdirectory friendly approach.
+        host_list = host.split('/')
+        if len(host_list) > 1:
+            new_host = host_list[0] + ':' + port + '/' + '/'.join(host_list[1:])
+            self._uri = '{}://{}/{}'.format(proto, new_host, path.strip('/'))
+        else:
+            self._uri = '{}://{}:{}/{}'.format(proto, host, port, path.strip('/'))
 
         if proto == 'https':
             transport = MagentoSafeTransport()
