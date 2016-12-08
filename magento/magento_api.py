@@ -60,7 +60,7 @@ class MagentoAPI(object):
         # Subdirectory friendly approach.
         host_list = host.split('/')
         if len(host_list) > 1:
-            new_host = host_list[0] + ':' + port + '/' + '/'.join(host_list[1:])
+            new_host = host_list[0] + ':' + str(port) + '/' + '/'.join(host_list[1:])
             self._uri = '{}://{}/{}'.format(proto, new_host, path.strip('/'))
         else:
             self._uri = '{}://{}:{}/{}'.format(proto, host, port, path.strip('/'))
